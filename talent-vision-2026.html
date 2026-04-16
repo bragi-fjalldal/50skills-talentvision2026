@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How AI is Shaping Workflow Automation — Talent Vision 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+
+/* ── Reset & tokens ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #111; }
+
+:root {
+  --white:   #FFFFFF;
+  --purple:  #23004E;
+  --navy:    #152663;
+  --accent:  #6B2FD9;
+  --light:   #EFECFE;
+  --muted:   #5A5472;
+  --border:  rgba(35,0,78,0.08);
+}
+
+/* ── Scaler ────────────────────────────────────────────── */
+#stage {
+  position: fixed; top: 0; left: 0;
+  width: 1920px; height: 1080px;
+  transform-origin: top left;
+}
+
+/* ── Slide base ────────────────────────────────────────── */
+.slide {
+  position: absolute; inset: 0;
+  width: 1920px; height: 1080px;
+  background: var(--white);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.42s ease, transform 0.42s ease;
+  transform: translateY(16px);
+  font-family: 'Work Sans', 'Helvetica Neue', Arial, sans-serif;
+  overflow: hidden;
+}
+.slide.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+.slide.prev   { opacity: 0; transform: translateY(-16px); }
+
+/* ── Shared logo ───────────────────────────────────────── */
+.logo-img {
+  height: 44px; width: auto;
+  mix-blend-mode: multiply;
+  display: block;
+}
+.logo-img.white-logo { mix-blend-mode: normal; filter: brightness(0) invert(1); }
+
+/* ── Shared header ─────────────────────────────────────── */
+.slide-header {
+  position: absolute;
+  top: 52px; left: 88px; right: 88px;
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 10;
+}
+.slide-counter {
+  font-size: 16px; font-weight: 500;
+  color: var(--muted); opacity: 0.4; letter-spacing: 2px;
+}
+
+/* ── Shared thin top accent bar ───────────────────────── */
+.accent-bar {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 4px; background: var(--accent);
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 1 — TITLE
+══════════════════════════════════════════════════════════ */
+#s1 { display: grid; grid-template-columns: 840px 1fr; }
+
+#s1 .left {
+  position: relative;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 72px 80px 64px 88px;
+  background: var(--white); z-index: 2;
+}
+#s1 .left::after {
+  content: ''; position: absolute; right: 0; top: 8%; bottom: 8%;
+  width: 1px; background: var(--border);
+}
+#s1 .accent-bar { right: auto; width: 4px; height: 100%; top: 0; left: 0; background: var(--accent); }
+
+#s1 .headline-block { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+#s1 .overline {
+  font-size: 18px; font-weight: 600; color: var(--accent);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 32px;
+}
+#s1 .headline {
+  font-size: 86px; font-weight: 800; line-height: 1.0;
+  color: var(--purple); letter-spacing: -2.5px; margin-bottom: 40px;
+}
+#s1 .headline .accent-text { color: var(--accent); }
+#s1 .subtitle {
+  font-size: 26px; font-weight: 500; color: var(--muted); line-height: 1.45;
+}
+#s1 .bottom-row {
+  display: flex; align-items: flex-end; justify-content: space-between;
+}
+#s1 .location-block { text-align: right; }
+#s1 .location-block .city { font-size: 18px; font-weight: 700; color: var(--purple); }
+#s1 .location-block .time { font-size: 16px; font-weight: 400; color: var(--muted); margin-top: 4px; }
+
+#s1 .right { position: relative; overflow: hidden; }
+#s1 .right img { width: 100%; height: 100%; object-fit: cover; object-position: center center; display: block; }
+#s1 .right::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100px; height: 100%;
+  background: linear-gradient(to right, #fff 0%, transparent 100%); z-index: 1;
+}
+
+/* ══════════════════════════════════════════════════════════
+   QUESTION SLIDES
+══════════════════════════════════════════════════════════ */
+.question-slide {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+}
+.question-slide .q-label {
+  font-size: 20px; font-weight: 600; color: var(--accent);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 36px;
+}
+.question-slide .q-text {
+  font-size: 96px; font-weight: 800; line-height: 1.05;
+  color: var(--purple); letter-spacing: -3px; max-width: 1400px;
+}
+.question-slide .q-sub {
+  font-size: 28px; font-weight: 400; color: var(--muted); margin-top: 36px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STATS SLIDE
+══════════════════════════════════════════════════════════ */
+#s5 .stats-body {
+  position: absolute;
+  top: 140px; left: 88px; right: 88px; bottom: 80px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+}
+#s5 .stats-left h2 {
+  font-size: 72px; font-weight: 800; color: var(--purple); letter-spacing: -2px;
+  line-height: 1.0; margin-bottom: 20px;
+}
+#s5 .stats-left p {
+  font-size: 26px; font-weight: 400; color: var(--muted); line-height: 1.5;
+}
+#s5 .stats-left .source {
+  font-size: 16px; color: var(--muted); opacity: 0.5; margin-top: 32px;
+}
+
+#s5 .stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+.stat-card {
+  background: #F7F6FB; border-radius: 16px;
+  padding: 40px 36px; border: 1.5px solid var(--border);
+}
+.stat-card .pct {
+  font-size: 72px; font-weight: 800; line-height: 1; letter-spacing: -2px;
+  color: var(--purple); margin-bottom: 10px;
+}
+.stat-card .pct span { color: var(--accent); }
+.stat-card.highlight { background: var(--purple); border-color: var(--purple); }
+.stat-card.highlight .pct { color: #fff; }
+.stat-card.highlight .pct span { color: rgba(255,255,255,0.6); }
+.stat-card .label { font-size: 20px; font-weight: 500; color: var(--navy); }
+.stat-card.highlight .label { color: rgba(255,255,255,0.75); }
+
+/* ══════════════════════════════════════════════════════════
+   AI NEWS SLIDE
+══════════════════════════════════════════════════════════ */
+#s7 { background: var(--purple); }
+#s7 .content {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 80px;
+}
+#s7 .eyebrow { font-size: 20px; font-weight: 600; color: rgba(255,255,255,0.5); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 36px; }
+#s7 .big-q { font-size: 100px; font-weight: 800; color: #fff; letter-spacing: -3px; line-height: 1.0; margin-bottom: 44px; }
+#s7 .chat-bubble {
+  display: inline-flex; align-items: center; gap: 18px;
+  background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 100px; padding: 20px 40px;
+  font-size: 24px; font-weight: 500; color: rgba(255,255,255,0.8);
+}
+#s7 .chat-bubble .claude-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--accent); display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: #fff; flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   AUTOMATION TYPES SLIDE
+══════════════════════════════════════════════════════════ */
+#s9 .body {
+  position: absolute; top: 140px; left: 88px; right: 88px; bottom: 80px;
+  display: flex; flex-direction: column;
+}
+#s9 .title { font-size: 64px; font-weight: 800; color: var(--purple); letter-spacing: -2px; margin-bottom: 56px; }
+
+#s9 .spectrum {
+  display: flex; align-items: center; gap: 0; margin-bottom: 48px;
+  background: linear-gradient(to right, #E7E2FE, var(--accent));
+  border-radius: 100px; height: 8px; position: relative; margin: 0 60px 48px;
+}
+#s9 .spectrum-label {
+  position: absolute; font-size: 17px; font-weight: 600; color: var(--muted);
+}
+#s9 .spectrum-label.left { left: -60px; top: -22px; }
+#s9 .spectrum-label.right { right: -60px; top: -22px; }
+
+#s9 .types-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; flex: 1;
+}
+.type-card {
+  background: #F7F6FB; border-radius: 16px; padding: 48px 44px;
+  border: 1.5px solid var(--border); display: flex; flex-direction: column; gap: 16px;
+}
+.type-card.center-card { background: var(--purple); border-color: var(--purple); }
+.type-card .t-icon { font-size: 40px; }
+.type-card .t-label { font-size: 30px; font-weight: 800; color: var(--purple); letter-spacing: -0.5px; }
+.type-card.center-card .t-label { color: #fff; }
+.type-card .t-desc { font-size: 19px; font-weight: 400; color: var(--muted); line-height: 1.5; }
+.type-card.center-card .t-desc { color: rgba(255,255,255,0.65); }
+.type-card .t-tag {
+  margin-top: auto; display: inline-block;
+  background: rgba(107,47,217,0.1); color: var(--accent);
+  font-size: 14px; font-weight: 700; padding: 6px 14px; border-radius: 100px;
+  letter-spacing: 1px; text-transform: uppercase; width: fit-content;
+}
+.type-card.center-card .t-tag { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
+
+/* ══════════════════════════════════════════════════════════
+   WHAT IS 50skills SLIDE
+══════════════════════════════════════════════════════════ */
+#s10 .body {
+  position: absolute; top: 140px; left: 88px; right: 88px; bottom: 80px;
+  display: flex; flex-direction: column;
+}
+#s10 .title { font-size: 64px; font-weight: 800; color: var(--purple); letter-spacing: -2px; margin-bottom: 56px; }
+#s10 .steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; flex: 1; }
+
+.step-card {
+  background: #F7F6FB; border-radius: 16px; padding: 52px 48px;
+  border: 1.5px solid var(--border); position: relative;
+  display: flex; flex-direction: column; gap: 20px; overflow: hidden;
+}
+.step-card.featured { background: var(--purple); border-color: var(--purple); }
+.step-card .step-num {
+  font-size: 72px; font-weight: 900; color: rgba(107,47,217,0.12);
+  position: absolute; top: 24px; right: 32px; line-height: 1; letter-spacing: -4px;
+}
+.step-card.featured .step-num { color: rgba(255,255,255,0.08); }
+.step-card .step-label {
+  font-size: 14px; font-weight: 700; color: var(--accent);
+  letter-spacing: 3px; text-transform: uppercase;
+}
+.step-card.featured .step-label { color: rgba(255,255,255,0.5); }
+.step-card .step-title {
+  font-size: 44px; font-weight: 800; color: var(--purple); letter-spacing: -1px; line-height: 1;
+}
+.step-card.featured .step-title { color: #fff; }
+.step-card .step-desc { font-size: 20px; font-weight: 400; color: var(--muted); line-height: 1.5; }
+.step-card.featured .step-desc { color: rgba(255,255,255,0.65); }
+
+/* Arrow between steps */
+.step-arrow {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; color: rgba(107,47,217,0.3); position: absolute;
+  top: 50%; transform: translateY(-50%);
+}
+
+/* ══════════════════════════════════════════════════════════
+   USE CASES SLIDE
+══════════════════════════════════════════════════════════ */
+#s11 .body {
+  position: absolute; top: 140px; left: 88px; right: 88px; bottom: 72px;
+  display: grid; grid-template-columns: 340px 1fr; gap: 64px; align-items: start;
+}
+#s11 .title { font-size: 56px; font-weight: 800; color: var(--purple); letter-spacing: -1.5px; line-height: 1.0; margin-bottom: 24px; }
+#s11 .sub { font-size: 20px; font-weight: 400; color: var(--muted); line-height: 1.5; }
+
+.use-cases-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+}
+.uc-card {
+  background: #F7F6FB; border-radius: 12px; padding: 28px 24px;
+  border: 1.5px solid var(--border);
+}
+.uc-card.featured { background: var(--purple); border-color: var(--purple); }
+.uc-card .uc-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+.uc-card .uc-title { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.uc-card.featured .uc-title { color: #fff; }
+.uc-card .uc-detail { font-size: 14px; font-weight: 400; color: var(--muted); line-height: 1.4; }
+.uc-card.featured .uc-detail { color: rgba(255,255,255,0.6); }
+
+/* ══════════════════════════════════════════════════════════
+   EXAMPLE SLIDES (dark photo right)
+══════════════════════════════════════════════════════════ */
+.example-slide { display: grid; grid-template-columns: 860px 1fr; }
+.example-slide .left {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 80px 80px 88px; position: relative; z-index: 2;
+}
+.example-slide .left .tag {
+  font-size: 16px; font-weight: 700; color: var(--accent);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 28px;
+}
+.example-slide .left .ex-title {
+  font-size: 72px; font-weight: 800; color: var(--purple);
+  letter-spacing: -2px; line-height: 1.0; margin-bottom: 36px;
+}
+.example-slide .left .ex-desc {
+  font-size: 26px; font-weight: 400; color: var(--muted); line-height: 1.55; margin-bottom: 48px;
+}
+.example-slide .left .ex-pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--light); color: var(--purple);
+  font-size: 18px; font-weight: 600; padding: 14px 24px; border-radius: 100px;
+  width: fit-content;
+}
+
+.example-slide .right { position: relative; overflow: hidden; }
+.example-slide .right img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+.example-slide .right::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 120px; height: 100%;
+  background: linear-gradient(to right, #fff, transparent); z-index: 1;
+}
+
+/* ══════════════════════════════════════════════════════════
+   QUOTE / TRANSITION SLIDES
+══════════════════════════════════════════════════════════ */
+.quote-slide {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 80px 160px;
+}
+.quote-slide .q-eyebrow {
+  font-size: 18px; font-weight: 700; color: var(--accent);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 40px;
+}
+.quote-slide .q-quote {
+  font-size: 88px; font-weight: 800; color: var(--purple);
+  letter-spacing: -3px; line-height: 1.0; margin-bottom: 32px;
+}
+.quote-slide .q-quote .accent-text { color: var(--accent); }
+.quote-slide .q-attr {
+  font-size: 26px; font-weight: 400; color: var(--muted);
+}
+
+/* ══════════════════════════════════════════════════════════
+   CTA SLIDES
+══════════════════════════════════════════════════════════ */
+.cta-slide { background: var(--purple) !important; }
+.cta-slide .accent-bar { background: rgba(255,255,255,0.2); }
+.cta-slide .content {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 80px;
+}
+.cta-slide .cta-label {
+  font-size: 20px; font-weight: 600; color: rgba(255,255,255,0.4);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 36px;
+}
+.cta-slide .cta-title {
+  font-size: 110px; font-weight: 800; color: #fff;
+  letter-spacing: -4px; line-height: 1.0; margin-bottom: 48px;
+}
+.cta-slide .cta-title .accent-text { color: rgba(107,47,217,0.6); }
+.cta-slide .cta-sub {
+  font-size: 28px; font-weight: 400; color: rgba(255,255,255,0.55);
+  max-width: 900px; line-height: 1.5;
+}
+.cta-slide .slide-header .logo-img { mix-blend-mode: normal; filter: brightness(0) invert(1); }
+.cta-slide .slide-counter { color: rgba(255,255,255,0.3); }
+
+/* ── Nav dots ──────────────────────────────────────────── */
+#nav {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 100;
+}
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.4);
+  cursor: pointer; transition: background 0.2s, transform 0.2s;
+}
+.dot.active { background: var(--accent); border-color: var(--accent); transform: scale(1.35); }
+
+/* ── Arrows ────────────────────────────────────────────── */
+.arrow {
+  position: fixed; top: 50%; transform: translateY(-50%); z-index: 100;
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 1.5px solid rgba(35,0,78,0.12); background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(8px); color: var(--purple); font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.2s;
+}
+.arrow:hover { background: rgba(255,255,255,0.95); }
+.arrow.hidden { opacity: 0; pointer-events: none; }
+#arrow-prev { left: 18px; }
+#arrow-next { right: 18px; }
+
+/* ── Progress bar ──────────────────────────────────────── */
+#progress {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 3px;
+  background: rgba(107,47,217,0.1); z-index: 100;
+}
+#progress-fill {
+  height: 100%; background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- ══ SLIDE 1: TITLE ══ -->
+<div class="slide active" id="s1">
+  <div class="accent-bar" style="position:absolute;top:0;left:0;width:4px;height:100%;right:auto;"></div>
+  <div class="left">
+    <div class="headline-block">
+      <div class="overline">Talent Vision 2026</div>
+      <div class="headline">How AI is<br>Shaping Workflow<br><span class="accent-text">Automation</span></div>
+      <div class="subtitle">If you can describe it —<br>you can build it.</div>
+    </div>
+    <div class="bottom-row">
+      <img class="logo-img" src="assets/50skills-logo.png" alt="50skills">
+      <div class="location-block">
+        <div class="city">Göteborg · 17 April</div>
+        <div class="time">9:00 AM – 12:00 PM</div>
+      </div>
+    </div>
+  </div>
+  <div class="right">
+    <img src="assets/photos/photo-4990.png" alt="">
+  </div>
+</div>
+
+<!-- ══ SLIDE 2: QUESTION 1 ══ -->
+<div class="slide question-slide" id="s3">
+  <div class="accent-bar"></div>
+  <div class="slide-header">
+    <img class="logo-img" src="assets/50skills-logo.png" alt="50skills">
+    <span class="slide-counter">02 / 12</span>
+  </div>
+  <div class="q-label">Quick Question</div>
+  <div class="q-text">How often do you<br>use AI for work?</div>
+  <div class="q-sub">Think about the last 30 days</div>
+</div>
+
+<!-- ══ SLIDE 3: POLL RESULTS ══ -->
+<div class="slide" id="s5">
+  <div class="accent-bar"></div>
+  <div class="slide-header">
+    <img class="logo-img" src="assets/50skills-logo.png" alt="50skills">
+    <span class="slide-counter">03 / 12</span>
+  </div>
+  <div class="stats-body">
+    <div class="stats-left">
+      <h2>+50% of HR<br>professionals<br>use AI for work</h2>
+      <p>The majority are using it daily or<br>multiple times a day.</p>
+      <div class="source">Source: 50skills 2025/26 Webinar Polls</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card highlight">
+        <div class="pct">55<span>%</span></div>
+        <div class="label">Use AI daily</div>
+      </div>
+      <div class="stat-card highlight">
+        <div class="pct">26<span>%</span></div>
+        <div class="label">Multiple times per day</div>
+      </div>
+      <div class="stat-card">
+        <div class="pct" style="color:var(--accent)">11<span style="color:var(--muted)">%</span></div>
+        <div class="label">A few times per week</div>
+      </div>
+      <div class="stat-card">
+        <div class="pct" style="color:var(--accent)">6<span style="color:var(--muted)">%</span></div>
+        <div class="label">A few times per month</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 4: QUESTION 2 ══ -->
+<div class="slide question-slide" id="s6">
+  <div class="accent-bar"></div>
+  <div class="slide-header">
+    <img class="logo-img" src="assets/50skills-logo.png" alt="50skills">
+    <span class="slide-counter">04 / 12</span>
+  </div>
+  <div class="q-label">Next Question</div>
+  <div class="q-text">What are you<br>using AI for?</div>
+  <div class="q-sub">Share in the room</div>
+</div>
+
+<!-- ══ SLIDE 5: WHY AUTOMATE HR ══ -->
+<div class="slide" id="s-admin" style="background:#000;">
+  <img style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block;" src="assets/photos/photo-4395.png" alt="">
+  <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(35,0,78,0.92) 0%,rgba(35,0,78,0.55) 45%,rgba(0,0,0,0.15) 100%);"></div>
+  <div class="slide-header" style="z-index:20;">
+    <img class="logo-img white-logo" src="assets/50skills-logo.png" alt="50skills">
+    <span class="slide-counter" style="color:rgba(255,255,255,0.25);">05 / 12</span>
+  </div>
+  <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:88px 100px;z-index:10;">
+    <div style="display:inline-flex;align-items:center;padding:16px 36px;border-radius:100px;background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.18);font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75);margin-bottom:36px;">Why use AI to automate HR processes?</div>
+    <div style="font-size:108px;font-weight:800;line-height:1.0;color:#fff;letter-spacing:-3.5px;margin-bottom:32px;max-width:1400px;">How much time do you<br>spend on repetitive admin?</div>
+    <div style="font-size:28px;font-weight:400;color:rgba(255,255,255,0.62);max-width:900px;line-height:1.55;">57% of HR time is spent on manual admin. Disconnected tools, spreadsheet-managed processes, and zero visibility — AI gives you a way out.</div>
+    <div style="margin-top:32px;font-size:22px;font-weight:600;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);padding:18px 40px;border-radius:100px;display:inline-block;">77% of HR teams are making automation a priority.</div>
+    <div style="font-size:14px;color:#fff;opacity:0.45;margin-top:16px;display:inline-block;">Sources: Deloitte 2025 · 50skills Global HR Survey 2026</div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 6: AUTOMATION TYPES ══ -->
+<div class="slide" id="s9">
+  <div class="accent-bar"></div>
+  <div class="slide-header">
+    <img class="logo-img" src="assets/50skills-logo.png" alt="50skills">
+    <span class="slide-counter">06 / 12</span>
+  </div>
+  <div class="body">
+    <div class="title">Automation vs AI Workflow vs AI Agent</div>
+    <div style="position:relative;margin:0 64px 44px;">
+      <div style="height:8px;background:linear-gradient(to right,#E7E2FE,#6B2FD9);border-radius:100px;"></div>
+      <span style="position:absolute;left:0;top:-26px;font-size:16px;font-weight:600;color:var(--muted);">Deterministic</span>
+      <span style="position:absolute;right:0;top:-26px;font-size:16px;font-weight:600;color:var(--accent);">Probabilistic</span>
+    </div>
+    <!-- Actual graphic from the original deck -->
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:0 48px;">
+      <img src="assets/screenshots/p9_img1.png" alt="Automation vs AI Workflow vs AI Agent comparison" style="width:100%;max-height:680px;object-fit:contain;border-radius:16px;filter:drop-shadow(0 4px 24px rgba(35,0,78,0.08));">
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 7: WHAT IS 50SKILLS ══ -->
+<div class="slide" id="s10">
+  <div class="accent-bar"></div>
+  <div class="slide-header">
+    <img class="logo-img" src="assets/50skills-logo.png" alt="50skills">
+    <span class="slide-counter">07 / 12</span>
+  </div>
+  <div class="body">
+    <div class="title">What is 50skills?</div>
+    <div class="steps">
+      <div class="step-card" style="padding:40px 40px 0 40px;overflow:hidden;justify-content:space-between;">
+        <div style="flex-shrink:0;">
+          <div class="step-num">1</div>
+          <div class="step-label">Step one</div>
+          <div class="step-title">Describe</div>
+          <div class="step-desc" style="margin-bottom:28px;">Tell 50skills what you need in plain language. No code. No diagrams. Just words.</div>
+        </div>
+        <div style="margin:0 -40px;flex-shrink:0;">
+          <img src="assets/screenshots/p10_img1.png" alt="Describe your workflow" style="width:100%;display:block;border-radius:10px 10px 0 0;box-shadow:0 -4px 20px rgba(35,0,78,0.08);">
+        </div>
+      </div>
+      <div class="step-card featured" style="padding:40px 40px 0 40px;overflow:hidden;justify-content:space-between;">
+        <div style="flex-shrink:0;">
+          <div class="step-num">2</div>
+          <div class="step-label">Step two</div>
+          <div class="step-title">Build</div>
+          <div class="step-desc" style="margin-bottom:28px;">AI builds the workflow for you. Review and adjust until it's exactly right.</div>
+        </div>
+        <div style="margin:0 -40px;flex-shrink:0;">
+          <img src="assets/screenshots/p10_img0.png" alt="AI builds your workflow" style="width:100%;display:block;border-radius:10px 10px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,0.2);">
+        </div>
+      </div>
+      <div class="step-card" style="padding:40px 40px 0 40px;overflow:hidden;justify-content:space-between;">
+        <div style="flex-shrink:0;">
+          <div class="step-num">3</div>
+          <div class="step-label">Step three</div>
+          <div class="step-title">Run</div>
+          <div class="step-desc" style="margin-bottom:28px;">Employees interact via forms, email, Slack or AI — you stay in control.</div>
+        </div>
+        <div style="margin:0 -40px;flex-shrink:0;">
+          <img src="assets/screenshots/p10_img2.png" alt="Journey running" style="width:100%;display:block;border-radius:10px 10px 0 0;box-shadow:0 -4px 20px rgba(35,0,78,0.08);">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 8: SEE IT LIVE ══ -->
+<div class="slide cta-slide" id="s16">
+  <div class="accent-bar"></div>
+  <div class="slide-header">
+    <img class="logo-img white-logo" src="assets/50skills-logo.png" alt="50skills">
+    <span class="slide-counter" style="color:rgba(255,255,255,0.25)">08 / 12</span>
+  </div>
+  <div class="content">
+    <div class="cta-label">Let's go</div>
+    <div class="cta-title">See it <span class="accent-text">live.</span></div>
+    <div class="cta-sub">Building has never been easier — try 50skills free for 14 days after this session.</div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 9: NAVIGATOR DEMO VIDEO (loops, no sound) ══ -->
+<div class="slide" id="s-video" style="background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+  <video
+    id="demo-video"
+    src="assets/navigator-demo-compressed.mp4"
+    autoplay loop muted playsinline
+    style="width:100%;height:100%;object-fit:contain;display:block;">
+  </video>
+  <div style="position:absolute;top:44px;left:56px;z-index:10;opacity:0.75;">
+    <img class="logo-img white-logo" src="assets/50skills-logo.png" alt="50skills" style="height:36px;">
+  </div>
+</div>
+
+<!-- ══ SLIDE 10: USE CASES ══ -->
+<div class="slide" id="s11">
+  <div class="accent-bar"></div>
+  <div class="slide-header">
+    <img class="logo-img" src="assets/50skills-logo.png" alt="50skills">
+    <span class="slide-counter">10 / 12</span>
+  </div>
+  <div class="body">
+    <div>
+      <div class="title">Common HR<br>Automation<br>Use Cases</div>
+      <div class="sub" style="margin-top:20px">Employee Onboarding has<br>saved clients the most in<br>actions automated.</div>
+    </div>
+    <div class="use-cases-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr 1fr;">
+      <div class="uc-card featured">
+        <span class="uc-icon">🚀</span>
+        <div class="uc-title">Onboarding</div>
+        <div class="uc-detail">New hires, seasonal, contractors &amp; temps. Buddy allocation, photo-ID validation.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">📄</span>
+        <div class="uc-title">Contracting</div>
+        <div class="uc-detail">Employee contracts, stock option offers &amp; agreements.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">👋</span>
+        <div class="uc-title">Offboarding</div>
+        <div class="uc-detail">All reasons, seasonal, contractors. Exit reports &amp; message drafting.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">🔁</span>
+        <div class="uc-title">Crossboarding</div>
+        <div class="uc-detail">Internal moves, role changes, department transfers.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">🏖️</span>
+        <div class="uc-title">Leave Management</div>
+        <div class="uc-detail">Absence requests, approvals, accruals. Automatic manager notifications.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">🎯</span>
+        <div class="uc-title">CV Screening</div>
+        <div class="uc-detail">AI-powered screening, sentiment analysis, candidate routing.</div>
+      </div>
+      <div class="uc-card featured">
+        <span class="uc-icon">📋</span>
+        <div class="uc-title">Employee Requests</div>
+        <div class="uc-detail">Benefits, incidents, queries. Auto approvals &amp; routing.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">🔍</span>
+        <div class="uc-title">Background Checks</div>
+        <div class="uc-detail">Automated verification workflows with human sign-off.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">📅</span>
+        <div class="uc-title">Event Registration</div>
+        <div class="uc-detail">Internal &amp; external events. Invites, confirmations, attendee summaries.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">⭐</span>
+        <div class="uc-title">Employee Reviews</div>
+        <div class="uc-detail">Performance cycles, 360 feedback collection, sign-off workflows.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">🎂</span>
+        <div class="uc-title">Birthday Reminders</div>
+        <div class="uc-detail">Automated milestone messages, work anniversaries, personalised notes.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">🔔</span>
+        <div class="uc-title">Notifications</div>
+        <div class="uc-detail">Reminders, milestones, deadlines. Delivered via email, Slack or AI.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">💰</span>
+        <div class="uc-title">Payroll Queries</div>
+        <div class="uc-detail">Employee pay questions, corrections and routing — resolved without HR bottlenecks.</div>
+      </div>
+      <div class="uc-card featured">
+        <span class="uc-icon">🎓</span>
+        <div class="uc-title">Training &amp; L&amp;D</div>
+        <div class="uc-detail">Course enrollment, completion tracking, reminders and manager sign-offs.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">📝</span>
+        <div class="uc-title">Policy Sign-offs</div>
+        <div class="uc-detail">Policy updates, acknowledgement collection and compliance tracking at scale.</div>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">🧩</span>
+        <div class="uc-title">Recruitment Pipeline</div>
+        <div class="uc-detail">Candidate progress, interview scheduling, offer letters and rejection flows.</div>
+      </div>
+    </div>
+    <div style="margin-top:20px;display:flex;align-items:center;gap:16px;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <div style="font-size:15px;font-weight:600;color:var(--muted);white-space:nowrap;letter-spacing:0.3px;">+ many more workflows</div>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 11: EXAMPLE — REQUEST APPROVALS ══ -->
+<div class="slide" id="s12" style="display:grid;grid-template-columns:580px 1fr;">
+  <div class="accent-bar"></div>
+  <div style="display:flex;flex-direction:column;justify-content:center;padding:72px 56px 72px 88px;position:relative;z-index:2;">
+    <div style="font-size:16px;font-weight:700;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;">Example Use Case</div>
+    <div style="font-size:64px;font-weight:800;color:var(--purple);letter-spacing:-2px;line-height:1.0;margin-bottom:28px;">Request<br>Approvals</div>
+    <div style="font-size:22px;font-weight:400;color:var(--muted);line-height:1.55;margin-bottom:36px;">Employees send in requests. AI labels or approves. Human in the loop when you want it.</div>
+    <div style="display:inline-flex;align-items:center;gap:10px;background:var(--light);color:var(--purple);font-size:17px;font-weight:600;padding:14px 22px;border-radius:100px;width:fit-content;">
+      <span>⚡</span> AI-powered approvals
+    </div>
+  </div>
+  <div style="position:relative;background:#F0EFF8;display:flex;align-items:center;justify-content:center;gap:24px;padding:48px 40px;overflow:hidden;">
+    <img src="assets/screenshots/p12_img2.png" alt="" style="width:48%;border-radius:12px;box-shadow:0 8px 40px rgba(35,0,78,0.18);object-fit:cover;">
+    <img src="assets/screenshots/p12_img0.png" alt="" style="width:48%;border-radius:12px;box-shadow:0 8px 40px rgba(35,0,78,0.18);object-fit:cover;">
+  </div>
+</div>
+
+<!-- ══ SLIDE 12: EXAMPLE — ONBOARDING ══ -->
+<div class="slide" id="s13" style="display:grid;grid-template-columns:580px 1fr;">
+  <div class="accent-bar"></div>
+  <div style="display:flex;flex-direction:column;justify-content:center;padding:72px 56px 72px 88px;position:relative;z-index:2;">
+    <div style="font-size:16px;font-weight:700;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;">Example Use Case</div>
+    <div style="font-size:64px;font-weight:800;color:var(--purple);letter-spacing:-2px;line-height:1.0;margin-bottom:28px;">New Employee<br>Onboarding</div>
+    <div style="font-size:22px;font-weight:400;color:var(--muted);line-height:1.55;margin-bottom:36px;">Hiring 200 people with 50 actions each = 10,000 actions to manage. 50skills makes it easy.</div>
+    <div style="display:inline-flex;align-items:center;gap:10px;background:var(--light);color:var(--purple);font-size:17px;font-weight:600;padding:14px 22px;border-radius:100px;width:fit-content;">
+      <span>🚀</span> 200 hires · 50 actions each
+    </div>
+  </div>
+  <div style="position:relative;background:#F0EFF8;display:flex;align-items:center;justify-content:center;padding:48px 56px;overflow:hidden;">
+    <img src="assets/screenshots/p13_img0.png" alt="" style="width:100%;max-height:880px;border-radius:12px;box-shadow:0 8px 40px rgba(35,0,78,0.2);object-fit:contain;">
+  </div>
+</div>
+
+
+</div><!-- end stage -->
+
+<!-- Nav -->
+<div id="nav"></div>
+<div class="arrow hidden" id="arrow-prev">&#8592;</div>
+<div class="arrow" id="arrow-next">&#8594;</div>
+<div id="progress"><div id="progress-fill"></div></div>
+
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const nav    = document.getElementById('nav');
+  const prev   = document.getElementById('arrow-prev');
+  const next   = document.getElementById('arrow-next');
+  const bar    = document.getElementById('progress-fill');
+  let cur = 0, busy = false;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.dataset.idx = i;
+    d.addEventListener('click', () => goTo(+d.dataset.idx));
+    nav.appendChild(d);
+  });
+
+  function scale() {
+    const s  = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    const ox = (window.innerWidth  - 1920 * s) / 2;
+    const oy = (window.innerHeight - 1080 * s) / 2;
+    document.getElementById('stage').style.transform =
+      `translate(${ox}px,${oy}px) scale(${s})`;
+  }
+  scale();
+  window.addEventListener('resize', scale);
+
+  function goTo(idx) {
+    if (idx === cur || busy || idx < 0 || idx >= slides.length) return;
+    busy = true;
+    const dir = idx > cur ? 1 : -1;
+
+    slides[cur].style.opacity = '0';
+    slides[cur].style.transform = `translateY(${-16 * dir}px)`;
+    slides[cur].classList.remove('active');
+
+    slides[idx].style.opacity = '0';
+    slides[idx].style.transform = `translateY(${16 * dir}px)`;
+    slides[idx].classList.add('active');
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      slides[idx].style.transform = '';
+      slides[idx].style.opacity   = '';
+    }));
+
+    cur = idx;
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+    prev.classList.toggle('hidden', cur === 0);
+    next.classList.toggle('hidden', cur === slides.length - 1);
+    bar.style.width = ((cur / (slides.length - 1)) * 100) + '%';
+
+    setTimeout(() => {
+      busy = false;
+      slides.forEach((s, i) => { if (i !== cur) { s.style.transform=''; s.style.opacity=''; } });
+      // Handle video slide
+      const vid = document.getElementById('demo-video');
+      if (vid) {
+        const vidIdx = slides.findIndex(s => s.id === 's-video');
+        if (cur === vidIdx) { vid.play(); }
+        else { vid.pause(); vid.currentTime = 0; }
+      }
+    }, 460);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(cur + 1); }
+    if (e.key === 'ArrowLeft')                   { e.preventDefault(); goTo(cur - 1); }
+  });
+  prev.addEventListener('click', () => goTo(cur - 1));
+  next.addEventListener('click', () => goTo(cur + 1));
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+  document.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) goTo(dx < 0 ? cur + 1 : cur - 1);
+  });
+
+  // Init progress
+  bar.style.width = '0%';
+  prev.classList.add('hidden');
+})();
+</script>
+</body>
+</html>
