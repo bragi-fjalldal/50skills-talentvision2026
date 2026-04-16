@@ -1,4 +1,82 @@
 <!DOCTYPE html>
+<!--
+  ═══════════════════════════════════════════════════════════════════════════
+  50skills — Design System Reference
+  ═══════════════════════════════════════════════════════════════════════════
+  If you are an AI assistant editing this file, READ THIS FIRST.
+  For a full working reference, see /design-reference/investor-deck.html in
+  this repo — it contains the complete 50skills visual system as live HTML/CSS.
+
+  ── Canvas ─────────────────────────────────────────────────────────────────
+  Every slide is rendered on a fixed 1920×1080 stage, scaled to fit the
+  viewport via JS transform. Build slides at true 1920×1080 dimensions.
+
+  ── Colour tokens (do not introduce new colours) ───────────────────────────
+  --purple   #23004E   Primary brand / dark slide backgrounds / headlines
+  --accent   #6B2FD9   Accents, pills, spectrum end, featured state
+  --light    #EFECFE   Light purple surface (used on pills on white bg)
+  --navy     #152663   Secondary dark text
+  --muted    #5A5472   Body/secondary text
+  --border   rgba(35,0,78,0.08)    1.5px card borders
+  Card bg    #F7F6FB   Light surface for cards on white slides
+  White bg   #FFFFFF   Default slide background
+
+  ── Typography (Work Sans, weights 400/500/600/700/800) ────────────────────
+  110px  cta-title (full-bleed purple CTA slide)
+  100px  big question on dark slide
+   96px  centered question slide (.q-text)
+   88px  pull-quote (.quote-slide .q-quote)
+   86px  title slide headline (#s1 .headline)
+   72px  section headline / stat number / example title
+   64px  standard slide title (automation types, what is 50skills)
+   56px  dense slide title (use cases)
+   44px  step-card title
+   32-26px   lead body / subtitle
+   20px  body, detail, uc-title
+   18px  overline, pill label, ex-pill
+   16-14px   metadata, tags, source lines
+  Letter-spacing: tight on big type (-2 to -4px), wide on overlines (+3px).
+  Overlines are uppercase + tracked + --accent coloured.
+
+  ── Spacing ────────────────────────────────────────────────────────────────
+  Horizontal slide padding:  88px (sometimes 80px)
+  Top of body below header:  140px
+  Bottom of body:            72–80px
+  Between cards in a row:    32px (12px on dense use-case grid)
+  Section breathing room:    48–56px between title and grid
+  Card interior padding:     40–52px
+
+  ── Component vocabulary (reuse, don't reinvent) ───────────────────────────
+  #s1          Title slide — 840px text column + full-bleed photo right
+  .question-slide   Centered big question on white, optional q-sub
+  .stat-card   Light card with big % and label; .highlight → purple variant
+  .type-card   Spectrum card (3-col grid); .center-card → purple variant
+  .step-card   Numbered process card; .featured → purple variant
+  .uc-card     Compact use-case card (3-col dense grid); .featured → purple
+  .example-slide    Text-left (860px) + photo-right, with .ex-pill CTA
+  .quote-slide      Full-bleed centered quote, optional accent-text span
+  .cta-slide        Dark purple closing slide, 110px title
+  Video slides (see #s-admin, #s-demo, #s-event): video absolutely
+  positioned right, with a left-to-right purple gradient overlay fading
+  the video into the text column. Standard pattern:
+    background: linear-gradient(90deg, var(--purple) 22%,
+                rgba(35,0,78,0.85) 45%, rgba(35,0,78,0.3) 70%, transparent 100%);
+
+  ── Shared chrome ──────────────────────────────────────────────────────────
+  .accent-bar     4px top accent line (--accent)
+  .slide-header   Logo left, slide-counter right, at top: 52px / side: 88px
+  On dark slides, add class .cta-slide (or equivalent) so the logo inverts
+  via `mix-blend-mode: normal; filter: brightness(0) invert(1);`
+
+  ── Don'ts ────────────────────────────────────────────────────────────────
+  × Do not introduce new colours outside the tokens above.
+  × Do not use a font other than Work Sans.
+  × Do not use border-radius values other than 12/16/100px (already in use).
+  × Do not use drop shadows or gradients other than the ones already defined.
+  × Do not break the 1920×1080 canvas — no responsive media queries here.
+  × Do not add emoji to UI copy unless explicitly asked.
+  ═══════════════════════════════════════════════════════════════════════════
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
